@@ -42,7 +42,7 @@ export class App {
     });
 
     const bulletImage = new Image();
-    bulletImage.src = "/assets/gonjal.gif";
+    bulletImage.src = "assets/gonjal.gif";
     bulletImage.onload = () => {
       this.bulletImage = bulletImage;
       this.init();

@@ -7,7 +7,7 @@ export class Player {
     this.src = null;
 
     const image = new Image();
-    image.src = "/assets/deniaul.gif";
+    image.src = "assets/deniaul.gif";
     image.onload = () => (this.src = image);
   }
 
