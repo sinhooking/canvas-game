@@ -7,7 +7,7 @@ import {
 import { getRandomFromMax } from "./utils.js";
 
 export class Bullet {
-  constructor(player, asset, { x, y, left, top }) {
+  constructor(player, asset, { x, y, left, top, width, height }) {
       
     this.x = x;
     this.y = y;
@@ -17,6 +17,8 @@ export class Bullet {
     }
     this.left = left;
     this.top = top;
+    this.width = width;
+    this.height = height;
     this.src = asset;
   }
 

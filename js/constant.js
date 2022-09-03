@@ -3,6 +3,7 @@ export const FONT_SIZE = 60;
 export const CANVAS_DIMENSION = { width: window.innerWidth, height: window.innerHeight }
 export const PLAYER_DIMENSION = { width: 60, height: 60 };
 export const BULLET_DIMENSION = { width: 10, height: 10 };
+export const BIG_BULLET_DIMENSION = { width: 30, height: 30 };
 
 export const PLAYER_SPEED = 200;
 

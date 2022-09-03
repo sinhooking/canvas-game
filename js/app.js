@@ -1,4 +1,5 @@
 import {
+  BIG_BULLET_DIMENSION,
   BULLET_DIMENSION,
   CANVAS_DIMENSION,
   FONT_SIZE,
@@ -7,12 +8,13 @@ import {
   GAME_STATE_READY,
   LEVEL_SPEED,
   PLAYER_DIMENSION,
-  PLAYER_SPEED,
   SCORE,
 } from "./constant.js";
 import { Player } from "./player.js";
 import { Bullet } from "./bullet.js";
 import { Draw } from "./draw.js";
+import { GIF } from "./gif.js";
+import { getRandomFromMax } from './utils.js';
 
 export class App {
   constructor(canvas) {
@@ -45,20 +47,32 @@ export class App {
     bulletImage.src = "assets/gonjal.gif";
     bulletImage.onload = () => {
       this.bulletImage = bulletImage;
-      this.init();
+      
     };
+
+    const backgroundGif = GIF();
+    backgroundGif.load("assets/gonjal2.gif");  
+    backgroundGif.onload = () => {
+      this.endBackgroundImage = backgroundGif;
+      this.init();
+    }
   }
 
   makeBullets() {
     const bullets = [];
     for (let bulletIndex = 0; bulletIndex < this.bulletCount; bulletIndex++) {
       const coords = Bullet.draw();
+      
+      const index = getRandomFromMax(2) - 1;
+      const dimension = [BIG_BULLET_DIMENSION, BULLET_DIMENSION][index];
 
       const bullet = new Bullet(this.player, this.bulletImage, {
         x: coords.x,
         y: coords.y,
         left: coords.left,
         top: coords.top,
+        width: dimension.width,
+        height: dimension.height,
       });
       bullets.push(bullet);
     }
@@ -103,19 +117,33 @@ export class App {
       y: CANVAS_DIMENSION.height,
     });
 
-    this.drawHelper.text({ text: `SCORE: ${this.score}`, x: 0, y: FONT_SIZE });
+    if (this.gameState === GAME_STATE_GAME_OVER) {
+      
+      this.endBackgroundImage.play();
+      this.drawHelper.image({
+        src: this.endBackgroundImage.image,
+        x: 0,
+         y: 0,
+        endX: CANVAS_DIMENSION.width,
+        endY: CANVAS_DIMENSION.height,
+      });
+    }
 
     if (this.gameState === GAME_STATE_READY) {
       this.drawHelper.text({ text: "시작 = 엔터", x: 0, y: FONT_SIZE * 2 });
     }
 
     if (this.gameState === GAME_STATE_GAME_OVER) {
+      this.drawHelper.text({ text: `SCORE: ${this.score}`, x: 0, y: FONT_SIZE, fill: '#000', });
       this.drawHelper.text({
+        fill: '#000',
         text: `${this.score} 로 사망ㅋ`,
         x: 0,
         y: FONT_SIZE * 2,
       });
-      this.drawHelper.text({ text: "시작 = 엔터 ㅋ", x: 0, y: FONT_SIZE * 3 });
+      this.drawHelper.text({ fill: '#000', text: "시작 = 엔터 ㅋ", x: 0, y: FONT_SIZE * 3 });
+    } else {
+      this.drawHelper.text({ text: `SCORE: ${this.score}`, x: 0, y: FONT_SIZE });
     }
 
     if (this.gameState === GAME_STATE_PLAY) {
@@ -128,11 +156,16 @@ export class App {
           this.bullets = this.bullets.filter((x) => x !== bullet);
           const coords = Bullet.draw();
 
+          const index = getRandomFromMax(2) - 1;
+          const dimension = [BIG_BULLET_DIMENSION, BULLET_DIMENSION][index];
+
           const crreatedBullet = new Bullet(this.player, this.bulletImage, {
             x: coords.x,
             y: coords.y,
             left: coords.left,
             top: coords.top,
+            width: dimension.width,
+            height: dimension.height,
           });
 
           this.bullets.push(crreatedBullet);
@@ -141,16 +174,15 @@ export class App {
             src: bullet.src,
             x: bullet.x,
             y: bullet.y,
-            endX: BULLET_DIMENSION.width,
-            endY: BULLET_DIMENSION.height,
+            endX: bullet.width,
+            endY: bullet.height,
           });
         }
       }
     }
 
-    if (this.player.src) {
+    if (this.player.src && this.gameState !== GAME_STATE_GAME_OVER) {
       this.player.update(this.keyEvent, this.secondsPassed);
-
       this.drawHelper.image({
         src: this.player.src,
         x: this.player.x,

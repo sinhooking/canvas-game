@@ -9,8 +9,10 @@ export class Draw {
     this.ctx.clearRect(0, 0, x, y);
   }
 
-  text({ text, x, y }) {
-    this.ctx.fillStyle = "#fff";
+  text({ text, x, y, fill }) {
+    let localFill = fill;
+    if (!localFill) localFill = '#fff';
+    this.ctx.fillStyle = localFill;
     this.ctx.font = FONT_SIZE / 2 + "px sans";
     this.ctx.fillText(text, x, y);
   }
